@@ -1,140 +1,36 @@
-#include <ncurses.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
+# Terminal-Based-Snake-Game
+I built a Minimal Console Based Snake Game  Using C  (Progamming Language) .     Follow The README file to Enjoy The Game.      
+# 🐍 Snake Game in C
 
-#define WIDTH  40
-#define HEIGHT 20
-#define DELAY 100000 // microseconds
+A classic **Snake Game** implemented in the C programming language.  
+Control the snake, eat the food, and grow longer — but don’t run into yourself or the walls!
 
-typedef struct SnakeSegment {
-    int x, y;
-    struct SnakeSegment *next;
-} SnakeSegment;
+## 📖 Overview
+This is a console-based Snake game written entirely in C.  
+It uses basic terminal output to render the snake and the game board.  
 
-SnakeSegment *snake = NULL;
-int food_x, food_y;
-int dir_x = 1, dir_y = 0; // start moving right
-int score = 0;
+**Features:**
+- Snake movement controlled by keyboard
+- Random food placement
+- Score tracking
+- Game-over detection when hitting walls or itself
 
-void init_game() {  
-    snake = malloc(sizeof(SnakeSegment));
-    snake->x = WIDTH / 2;
-    snake->y = HEIGHT / 2;
-    snake->next = NULL;
-    srand(time(NULL));
-    food_x = rand() % WIDTH;
-    food_y = rand() % HEIGHT;
-}
+- ### Prerequisites
+- A C compiler such as **GCC**
+- Install "PDcurses"(for Windows)/"ncurses"(for linux or mac) 
+        To install ncurses -  sudo apt install libncurses5-dev libncursesw5-dev (for linux)
 
-void end_game() {
-    SnakeSegment *current = snake;
-    while (current) {
-        SnakeSegment *tmp = current;
-        current = current->next;
-        free(tmp);
-    }
-    endwin();
-printf("Game Over! Final Score: %d\n", score);
-    exit(0);
-}
+sudo apt install libncurses5-dev libncursesw5-dev
+- 
+## Installation & Compilation Steps
 
-void draw_game() {
-    clear();
-    // draw border
-    for (int i = 0; i < WIDTH + 2; i++) {
-        mvprintw(0, i, "#");
-        mvprintw(HEIGHT + 1, i, "#");
-    }
-    for (int i = 1; i <= HEIGHT; i++) {
-        mvprintw(i, 0, "#");
-        mvprintw(i, WIDTH + 1, "#");
-    }
+1. Clone or download the repository:
+   https://github.com/NitinPathak24x7/Terminal-Based-Snake-Game
 
-    // draw snake
-    SnakeSegment *current = snake;
-    while (current) {
-        mvprintw(current->y + 1, current->x + 1, "O");
-        current = current->next;
-    }
+2. Navigate to the folder:
 
-    // draw food
-    mvprintw(food_y + 1, food_x + 1, "*");
+3. Compile the Program :
+   gcc file.c -o snake -lncurses
 
-    // draw score
-    mvprintw(HEIGHT + 3, 0, "Score: %d", score);
-    refresh();
-}
-
-void move_snake() {
-    int new_x = snake->x + dir_x;
-    int new_y = snake->y + dir_y;
-
-    // collision with wall
-    if (new_x < 0 || new_x >= WIDTH || new_y < 0 || new_y >= HEIGHT)
-        end_game();
-
-    // collision with self
-    SnakeSegment *curr = snake;
-    while (curr) {
-        if (curr->x == new_x && curr->y == new_y)
-            end_game();
-        curr = curr->next;
-    }
-
-    // create new head
-    SnakeSegment *new_head = malloc(sizeof(SnakeSegment));
-    new_head->x = new_x;
-    new_head->y = new_y;
-    new_head->next = snake;
-    snake = new_head;
-
-    // check food collision
-    if (new_x == food_x && new_y == food_y) {
-        score++;
-        food_x = rand() % WIDTH;
-        food_y = rand() % HEIGHT;
-    } else {
-        // remove tail
-        SnakeSegment *prev = NULL;
-        SnakeSegment *tail = snake;
-        while (tail->next) {
-            prev = tail;
-            tail = tail->next;
-        }
-        free(tail);
-        if (prev)
-            prev->next = NULL;
-    }
-}
-
-void handle_input() {
-    int ch = getch();
-    switch (ch) {
-        case KEY_UP:    if (dir_y != 1) { dir_x = 0; dir_y = -1; } break;
-        case KEY_DOWN:  if (dir_y != -1){ dir_x = 0; dir_y = 1; }  break;
-        case KEY_LEFT:  if (dir_x != 1) { dir_x = -1; dir_y = 0; } break;
-        case KEY_RIGHT: if (dir_x != -1){ dir_x = 1; dir_y = 0; }  break;
-        case 'q': end_game(); break;
-    }
-}
-
-int main() {
-    initscr();
-    noecho();
-    curs_set(FALSE);
-    keypad(stdscr, TRUE);
-    nodelay(stdscr, TRUE); // non-blocking input
-
-    init_game();
-
-    while (1) {
-        handle_input();
-        move_snake();
-        draw_game();
-        usleep(DELAY);
-    }
-
-    endwin();
-    return 0;
-}
+4. Run the Program :
+   ./snake
