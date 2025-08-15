@@ -15,8 +15,8 @@ It uses basic terminal output to render the snake and the game board.
 
 - ### Prerequisites
 - A C compiler such as **GCC**
-- Install "ncurses" if not already installed
-     sudo apt install libncurses5-dev libncursesw5-dev (for linux)
+- Install "PDcurses"(Windows) / "ncurses"(Linux/Unix/Mac) 
+    for installing ncurses in linux - sudo apt install libncurses5-dev libncursesw5-dev
 
 sudo apt install libncurses5-dev libncursesw5-dev
 - 
